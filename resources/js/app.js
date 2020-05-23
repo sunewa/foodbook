@@ -14,6 +14,7 @@ Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
 
 window.Fire = new Vue();
+import store from "./store/index";
 
 import router from "./router";
 require("./modules/filter");
@@ -42,5 +43,6 @@ Vue.component(
 
 const app = new Vue({
     el: "#app",
+    store,
     router
 });
