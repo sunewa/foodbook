@@ -6,8 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        isAuth: false,
-        user: null
+        isAuth: false
     },
     mutations: {
         CLEAR_APP(state, payload) {

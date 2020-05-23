@@ -227,6 +227,7 @@ export default {
         console.log("Component mounted.");
     },
     created() {
+        console.log("a");
         this.loadUsers();
         Fire.$on("loadUsers", () => {
             this.loadUsers();
@@ -272,8 +273,8 @@ export default {
             });
         },
         loadUsers() {
-            axios.get("/api/user").then(data => {
-                this.users = data.data.data;
+            axios.get("/api/user").then(res => {
+                this.users = res.data.user.data;
             });
         },
         deleteUser(id) {

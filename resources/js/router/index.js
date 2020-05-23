@@ -19,6 +19,11 @@ let routes = [
         component: Profile
     },
     {
+        path: "/user",
+        name: "user",
+        component: User
+    },
+    {
         path: "/blog",
         name: "blog",
         component: Blog
