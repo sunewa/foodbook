@@ -21,5 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['auth:web']], function () {
     Route::apiResource('user', 'API\UserController');
+
+    Route::post('blog/check-slug','API\BlogController@checkSlug');
+    Route::apiResource('blog', 'API\BlogController');
+    
     Route::get('profile','API\UserController@profile');
 });
