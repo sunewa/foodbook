@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::group(['middleware' => ['auth:web']], function () {
+    Route::apiResource('user', 'API\UserController');
+    Route::get('profile','API\UserController@profile');
+});
