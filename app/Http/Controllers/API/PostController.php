@@ -4,9 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Blog;
+use App\Post;
+use Image;
 
-class BlogController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +16,16 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = Blog::all();
+        $posts = Post::all();
 
-        return response()->json(['blogs'=>$blogs]);
+        foreach($posts as $post) {
+           if($post->image){
+                $post->image_url = URL('img/uploads/thumbs/').'/'.$post->image;    
+           }
+           $post->image_url = URL('img/default.png');
+        };
+
+        return response()->json(['posts'=>$posts]);
     }
 
     /**
@@ -59,7 +67,7 @@ class BlogController extends Controller
     public function checkSlug(Request $request){
         
         $slug = $this->slugify($request->title);
-        $isExist = Blog::whereSlug($slug)->first();
+        $isExist = Post::whereSlug($slug)->first();
         if($isExist){
             return response()->json(['slug'=>$slug, 'unique'=> 0]);
         }else{
@@ -76,7 +84,7 @@ class BlogController extends Controller
     {
         
         $slug = $this->slugify($request->title);
-        $isExist = Blog::whereSlug($slug)->first();
+        $isExist = Post::whereSlug($slug)->first();
         if($isExist){
             return response()->json(['message'=>"Slug already exist"], 500);
         }
@@ -86,16 +94,16 @@ class BlogController extends Controller
             'description'=>'required|string|min:10',
         ]);
 
-        $blog = new Blog;
-        $blog->user_id = \Auth::user()->id;
-        $blog->slug = $slug;
-        $blog->title = $request->title;
-        $blog->description = $request->description;
-        $blog->image = 'default.png';
-        $blog->allow_comment = 1;
-        $blog->save();
+        $post = new Post;
+        $post->user_id = \Auth::user()->id;
+        $post->slug = $slug;
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->image = ($request->image) ? $request->image : '';
+        $post->allow_comment = $request->allow_comment;
+        $post->save();
 
-        return response()->json(['blog'=>$blog, 'message'=>"Saved"]);
+        return response()->json(['post'=>$post, 'message'=>"Saved"]);
     }
 
     /**
@@ -106,8 +114,16 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $blog = Blog::find($id);
-        return response()->json(['blog'=>$blog]);
+        $post = Post::find($id);
+        
+        $post->image_url = URL('img/default.png');
+        if($post->image){
+            $post->image_url = URL('img/uploads/thumbs/').'/'.$post->image;    
+        }
+        
+    
+
+        return response()->json(['post'=>$post]);
     }
 
 
@@ -125,16 +141,16 @@ class BlogController extends Controller
             'description'=>'required|string|min:10',
         ]);
 
-        $blog = Blog::find($id);
-        $this->checkifBelongsToUser($blog->user_id);
+        $post = Post::find($id);
+        $this->checkifBelongsToUser($post->user_id);
 
-        $blog->title = $request->title;
-        $blog->description = $request->description;
-        $blog->image = 'default.png';
-        $blog->allow_comment = 1;
-        $blog->save();
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->image = $request->image;
+        $post->allow_comment = $request->allow_comment;
+        $post->save();
 
-        return response()->json(['blog'=>$blog, 'message'=>"Saved"]);
+        return response()->json(['post'=>$post, 'message'=>"Saved"]);
     }
 
     private function checkifBelongsToUser($user_id){
@@ -152,11 +168,42 @@ class BlogController extends Controller
      */
     public function destroy($id)
     {
-        $blog = Blog::findOrFail($id);
-        $this->checkifBelongsToUser($blog->user_id);
+        $post = Post::findOrFail($id);
+        $this->checkifBelongsToUser($post->user_id);
         
-        $blog->delete();
+        $post->delete();
 
-        return response()->json(['message'=>"Blog deleted successfully"]);
+        return response()->json(['message'=>"Post deleted successfully"]);
+    }
+
+    public function imageUpload(Request $request){
+        if($request->hasFile('image')){
+            $this->validate($request, array(
+                'image' => 'required'
+                ));
+
+            // add new image
+            // delete old image
+            // update db
+            $image = $request->file('image');    
+
+            $filename = time().'.'.$image->getClientOriginalExtension(); //get extension of file
+            $location = public_path('img/uploads/'.$filename);
+            $thumbs_location = public_path('img/uploads/thumbs/'. $filename);
+    
+            // save image with default orientation
+            Image::make($image)->orientate()->save($location);
+            // Image::make($image)->save($location);
+    
+            $img = Image::make($location);
+    
+            $img->fit(400, 400)->save($thumbs_location);
+
+    
+            // return $filename;
+        
+            return response()->json(['url'=> URL('img/uploads/thumbs/'.$filename), 'filename'=>$filename, 'success' => 'You have successfully uploaded an image'], 200);
+        }
+        
     }
 }

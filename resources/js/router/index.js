@@ -2,20 +2,20 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Dashboard from "./../components/Dashboard";
-import Blog from "./../components/Blog";
+import Post from "./../components/Post";
 import Profile from "./../components/Profile";
-import BlogForm from "./../components/BlogForm";
+import PostForm from "./../components/PostForm";
 import User from "./../components/User";
 
 Vue.use(VueRouter);
 
 let routes = [
     {
-        path: "/dashboard",
+        path: "/manage/dashboard",
         component: Dashboard
     },
     {
-        path: "/profile",
+        path: "/manage/profile",
         component: Profile
     },
     {
@@ -24,19 +24,19 @@ let routes = [
         component: User
     },
     {
-        path: "/blog",
-        name: "blog",
-        component: Blog
+        path: "/manage/post",
+        name: "post",
+        component: Post
     },
     {
-        path: "/blog/create",
-        name: "blog-create",
-        component: BlogForm
+        path: "/manage/post/create",
+        name: "post-create",
+        component: PostForm
     },
     {
-        path: "/blog/:id/edit",
-        name: "blog-edit",
-        component: BlogForm
+        path: "/manage/post/:id/edit",
+        name: "post-edit",
+        component: PostForm
     }
 ];
 const router = new VueRouter({
