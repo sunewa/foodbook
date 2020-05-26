@@ -88,10 +88,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/manage/post" class="nav-link">
+            <router-link to="/manage/posts" class="nav-link">
               <i class="nav-icon fas fa-cubes"></i>
               <p>
-                Post
+                Posts
               </p>
             </router-link>
           </li>

@@ -23,9 +23,14 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::apiResource('user', 'API\UserController');
 
     Route::post('image-upload','API\PostController@imageUpload');
+    
+    Route::get('/posts/categories','API\PostController@getCategorys');
+    Route::get('/posts/tags','API\PostController@getTags');
     Route::post('posts/check-slug','API\PostController@checkSlug');
     Route::apiResource('posts', 'API\PostController');
     
+    
+
     Route::get('profile','API\UserController@profile');
     Route::put('profile','API\UserController@updateProfile');
 });

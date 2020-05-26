@@ -4,12 +4,12 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">posts</h3>
+                        <h3 class="card-title">Posts</h3>
 
                         <div class="card-tools">
                             <!-- Button trigger modal -->
                             <router-link
-                                to="/manage/post/create"
+                                :to="{ name: 'post-create' }"
                                 class="btn btn-primary"
                             >
                                 Add New
