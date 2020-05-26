@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
 use App\Tag;
+use App\Category;
 use Image;
 use Auth;
 
@@ -101,6 +102,7 @@ class PostController extends Controller
         $this->validate($request, [
             'title'=>'required|string|max:100',
             'description'=>'required|string|min:10',
+            'categories' => 'required'
         ]);
 
         $post = new Post;
@@ -111,10 +113,13 @@ class PostController extends Controller
         $post->image = ($request->image) ? $request->image : '';
         $post->allow_comment = $request->allow_comment;
 
-        $tag_ids = $this->storeTags($request->tag);
+        $post->save();
+
+        $tag_ids = $this->storeTags($request->tags);
         $post->tags()->sync($tag_ids);
 
-        $post->save();
+        $category_ids = $this->storeCategorys($request->categories);
+        $post->categories()->sync($category_ids);
 
         return response()->json(['post'=>$post, 'message'=>"Saved"]);
     }
@@ -127,7 +132,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with('tags')->find($id);
+        $post = Post::with('tags')->with('categories')->find($id);
         
         $post->image_url = URL('img/default.png');
         if($post->image){
@@ -152,6 +157,7 @@ class PostController extends Controller
         $this->validate($request, [
             'title'=>'required|string|max:100',
             'description'=>'required|string|min:10',
+            'categories' => 'required'
         ]);
 
         $post = Post::find($id);
@@ -164,9 +170,12 @@ class PostController extends Controller
         $post->description = $request->description;
         $post->image = $request->image;
         $post->allow_comment = $request->allow_comment;
-
+        
         $tag_ids = $this->storeTags($request->tags);
         $post->tags()->sync($tag_ids);
+
+        $category_ids = $this->storeCategorys($request->categories);
+        $post->categories()->sync($category_ids);
 
         $post->save();
 
@@ -182,6 +191,17 @@ class PostController extends Controller
             array_push($tag_ids, Tag::firstOrCreate($d)->id);
         }
         return $tag_ids;
+    }
+
+    private function storeCategorys($categorys){
+        $category_ids=[];
+        foreach($categorys as $h){
+            $d=[];
+            $d['name'] = $h['name'];
+            $d['code'] = $h['code'];
+            array_push($category_ids, (Category::where('code',$d['code'])->first())->id);
+        }
+        return $category_ids;
     }
     /**
      * Remove the specified resource from storage.
@@ -228,5 +248,15 @@ class PostController extends Controller
             return response()->json(['url'=> URL('img/uploads/thumbs/'.$filename), 'filename'=>$filename, 'success' => 'You have successfully uploaded an image'], 200);
         }
         
+    }
+
+    public function getTags(){
+        $tags = Tag::all();
+        return response()->json(['tags'=>$tags]);
+    }
+
+    public function getCategorys(){
+        $categories = Category::all();
+        return response()->json(['categories'=>$categories]);
     }
 }

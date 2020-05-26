@@ -13,19 +13,26 @@
                                     @submit.prevent="
                                         isEdit ? updatePost() : createPost()
                                     "
-                                    @keydown="form.onKeydown($event)"
                                 >
                                     <div class="form-group row">
                                         <div class="col-md-8">
                                             <div class="form-group">
-                                                <label>Title</label>
+                                                <label>Title*</label>
                                                 <input
                                                     v-model="form.title"
                                                     type="text"
                                                     name="title"
                                                     class="form-control"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.title
+                                                    }"
                                                     v-on:keyup="checkSlug"
                                                 />
+                                                <code v-if="errors.title">{{
+                                                    errors.title[0]
+                                                }}</code>
+                                                <br />
                                                 .com/{{ form.slug }}
                                             </div>
 
@@ -50,16 +57,53 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <label>Description</label>
+                                                <label>Description*</label>
                                                 <vue-editor
                                                     v-model="form.description"
                                                     type="text"
                                                     name="description"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.description
+                                                    }"
                                                 ></vue-editor>
+                                                <code
+                                                    v-if="errors.description"
+                                                    >{{
+                                                        errors.description[0]
+                                                    }}</code
+                                                >
                                             </div>
                                         </div>
 
                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Categories</label>
+                                                <multiselect
+                                                    v-model="form.categories"
+                                                    placeholder="Search for category"
+                                                    label="name"
+                                                    track-by="code"
+                                                    :options="categories"
+                                                    :searchable="false"
+                                                    :multiple="true"
+                                                    :taggable="true"
+                                                    :hide-selected="true"
+                                                    open-direction="bottom"
+                                                    :class="{
+                                                        'is-invalid':
+                                                            errors.categories
+                                                    }"
+                                                >
+                                                    >
+                                                </multiselect>
+                                                <code
+                                                    v-if="errors.categories"
+                                                    >{{
+                                                        errors.categories[0]
+                                                    }}</code
+                                                >
+                                            </div>
                                             <div class="form-group">
                                                 <label>Tags</label>
                                                 <multiselect
@@ -71,12 +115,14 @@
                                                     :options="options"
                                                     :multiple="true"
                                                     :taggable="true"
+                                                    :hide-selected="true"
+                                                    open-direction="bottom"
                                                     @tag="addTag"
                                                 ></multiselect>
                                             </div>
                                             <div class="form-group">
                                                 <label for="exampleInputFile"
-                                                    >File input</label
+                                                    >Image</label
                                                 >
                                                 <div class="input-group">
                                                     <div class="custom-file">
@@ -141,11 +187,8 @@ export default {
     data() {
         return {
             isEdit: false,
-            options: [
-                { name: "Vue.js", code: "1" },
-                { name: "Javascript", code: "2" },
-                { name: "Open Source", code: "3" }
-            ],
+            options: [],
+            categories: [],
             form: {
                 id: this.$route.params.id,
                 slug: "",
@@ -155,11 +198,15 @@ export default {
                 image: "",
                 image_url: "http://127.0.0.1:8000/img/default.png",
                 description: "",
-                tags: []
-            }
+                tags: [],
+                categories: []
+            },
+            errors: []
         };
     },
     created() {
+        this.loadTags();
+        this.loadCategorys();
         if (this.form.id) {
             this.loadPost(this.form.id);
         }
@@ -177,13 +224,28 @@ export default {
             this.form.tags.push(tag);
         },
         checkSlug() {
+            this.errors = [];
             if (this.form.title.length > 5 && !this.isEdit) {
                 this.form.slug = "";
-                this.form.post("/api/posts/check-slug").then(res => {
+                axios.post("/api/posts/check-slug", this.form).then(res => {
                     this.form.slug = res.data.slug;
                     this.form.unique = res.data.unique;
                 });
             }
+        },
+        loadTags() {
+            axios.get("/api/posts/tags").then(res => {
+                this.options = Object.keys(res.data.tags).map(key => {
+                    return res.data.tags[key];
+                });
+            });
+        },
+        loadCategorys() {
+            axios.get("/api/posts/categories").then(res => {
+                this.categories = Object.keys(res.data.categories).map(key => {
+                    return res.data.categories[key];
+                });
+            });
         },
         loadPost(id) {
             this.isEdit = true;
@@ -194,6 +256,7 @@ export default {
                     description,
                     allow_comment,
                     tags,
+                    categories,
                     image,
                     image_url
                 } = res.data.post;
@@ -203,6 +266,7 @@ export default {
                 this.form.description = description;
                 this.form.allow_comment = allow_comment;
                 this.form.tags = tags;
+                this.form.categories = categories;
                 this.form.image = image;
                 this.form.image_url = image_url;
             });
@@ -225,6 +289,8 @@ export default {
                             title: err.response.data.message
                         });
                     }
+                    this.errors = err.response.data.errors;
+                    window.scrollTo(0, 0);
                 });
         },
         updatePost() {
@@ -245,6 +311,8 @@ export default {
                             title: err.response.data.message
                         });
                     }
+                    this.errors = err.response.data.errors;
+                    window.scrollTo(0, 0);
                 });
         },
         onImageChange(e) {
