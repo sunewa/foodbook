@@ -19,7 +19,7 @@ let routes = [
         component: Profile
     },
     {
-        path: "/user",
+        path: "/manage/users",
         name: "user",
         component: User
     },

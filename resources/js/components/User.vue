@@ -224,10 +224,9 @@ export default {
         };
     },
     mounted() {
-        console.log("Component mounted.");
+        // console.log("Component mounted.");
     },
     created() {
-        console.log("a");
         this.loadUsers();
         Fire.$on("loadUsers", () => {
             this.loadUsers();

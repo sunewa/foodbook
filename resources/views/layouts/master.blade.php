@@ -128,11 +128,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-<<<<<<< HEAD
-                <router-link to="/user" class="nav-link">
-=======
                 <router-link to="/manage/users" class="nav-link">
->>>>>>> feature-blog
                   <i class="far fa-circle nav-icon"></i>
                   <p>Users</p>
                 </router-link>
