@@ -27,7 +27,7 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Created At</th>
-                                    <th>Type</th>
+                                    <th>Role</th>
                                     <th>Modify</th>
                                 </tr>
                             </thead>
@@ -38,7 +38,7 @@
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.created_at | myDate }}</td>
                                     <td>
-                                        Role
+                                        {{ user.role | upperCase }}
                                     </td>
                                     <td>
                                         <a
@@ -160,7 +160,6 @@
                                 <label>Role</label>
                                 <select
                                     v-model="form.role"
-                                    type="text"
                                     name="role"
                                     class="form-control"
                                     :class="{
@@ -219,6 +218,7 @@ export default {
                 name: "",
                 email: "",
                 password: "",
+                role: "user",
                 photo: ""
             })
         };

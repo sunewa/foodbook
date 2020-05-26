@@ -41,6 +41,10 @@ Vue.component(
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+axios.get("/api/profile").then(({ data }) => {
+    store.dispatch("loadAuthUser", data);
+});
+
 const app = new Vue({
     el: "#app",
     store,

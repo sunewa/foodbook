@@ -11,7 +11,9 @@
                         <h3 class="widget-user-username text-right">
                             {{ profile.name }}
                         </h3>
-                        <h5 class="widget-user-desc text-right">User</h5>
+                        <h5 class="widget-user-desc text-right">
+                            {{ profile.role | upperCase }}
+                        </h5>
                     </div>
                     <div class="widget-user-image">
                         <img
@@ -58,7 +60,7 @@
 
             <div class="col-md-7">
                 <div class="card">
-                    <div class="card-header">User</div>
+                    <div class="card-header">Profile</div>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="tab-content">
@@ -66,43 +68,36 @@
                                 <form
                                     class="form-horizontal"
                                     @submit.prevent="updateProfile"
-                                    @keydown="form.onKeydown($event)"
                                 >
                                     <div class="form-group">
-                                        <label>Name</label>
+                                        <label>Name*</label>
                                         <input
                                             v-model="form.name"
                                             type="text"
                                             name="name"
                                             class="form-control"
                                             :class="{
-                                                'is-invalid': form.errors.has(
-                                                    'name'
-                                                )
+                                                'is-invalid': errors.name
                                             }"
                                         />
-                                        <has-error
-                                            :form="form"
-                                            field="name"
-                                        ></has-error>
+                                        <code v-if="errors.name">{{
+                                            errors.name[0]
+                                        }}</code>
                                     </div>
                                     <div class="form-group">
-                                        <label>Email</label>
+                                        <label>Email*</label>
                                         <input
                                             v-model="form.email"
                                             type="text"
                                             name="email"
                                             class="form-control"
                                             :class="{
-                                                'is-invalid': form.errors.has(
-                                                    'email'
-                                                )
+                                                'is-invalid': errors.name
                                             }"
                                         />
-                                        <has-error
-                                            :form="form"
-                                            field="email"
-                                        ></has-error>
+                                        <code v-if="errors.email">{{
+                                            errors.email[0]
+                                        }}</code>
                                     </div>
                                     <div class="form-group">
                                         <label
@@ -114,45 +109,40 @@
                                             type="password"
                                             name="password"
                                             class="form-control"
-                                            :class="{
-                                                'is-invalid': form.errors.has(
-                                                    'password'
-                                                )
-                                            }"
                                         />
-
-                                        <has-error
-                                            :form="form"
-                                            field="password"
-                                        ></has-error>
                                     </div>
-
                                     <div class="form-group">
-                                        <label>Experience</label>
+                                        <label>About</label>
+
                                         <textarea
-                                            v-model="form.experience"
+                                            v-model="form.about"
                                             type="text"
-                                            name="experience"
+                                            name="about"
                                             class="form-control"
-                                            :class="{
-                                                'is-invalid': form.errors.has(
-                                                    'experience'
-                                                )
-                                            }"
                                         ></textarea>
-                                        <has-error
-                                            :form="form"
-                                            field="experience"
-                                        ></has-error>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Hobbies</label>
+                                        <multiselect
+                                            v-model="form.hobbies"
+                                            tag-placeholder="Add this as new tag"
+                                            placeholder="Search or add a tag"
+                                            label="name"
+                                            track-by="code"
+                                            :options="options"
+                                            :multiple="true"
+                                            :taggable="true"
+                                            @tag="addTag"
+                                        ></multiselect>
                                     </div>
 
                                     <div class="form-group row">
-                                        <div class="offset-sm-2 col-sm-10">
+                                        <div class="col-sm-12">
                                             <button
                                                 type="submit"
-                                                class="btn btn-danger"
+                                                class="btn btn-success float-right"
                                             >
-                                                Submit
+                                                Update
                                             </button>
                                         </div>
                                     </div>
@@ -171,17 +161,28 @@
 </template>
 
 <script>
+import Multiselect from "vue-multiselect";
 export default {
+    components: {
+        Multiselect
+    },
     data() {
         return {
+            options: [
+                { name: "Vue.js", code: "1" },
+                { name: "Javascript", code: "2" },
+                { name: "Open Source", code: "3" }
+            ],
             profile: {},
-            form: new Form({
+            form: {
                 id: "",
                 name: "",
                 email: "",
                 password: "",
-                photo: ""
-            })
+                about: "",
+                hobbies: []
+            },
+            errors: []
         };
     },
     created() {
@@ -189,23 +190,46 @@ export default {
     },
     mounted() {},
     methods: {
+        addTag(newTag) {
+            console.log(newTag);
+            const tag = {
+                name: newTag,
+                code:
+                    newTag.substring(0, 2) +
+                    Math.floor(Math.random() * 10000000)
+            };
+
+            this.options.push(tag);
+            this.form.hobbies.push(tag);
+        },
         loadProfile() {
             // Submit the form via a POST request
             axios.get("/api/profile").then(({ data }) => {
+                const { id, name, about, email, hobbies } = data.user;
                 this.profile = data.user;
-                this.form.fill(data.user);
+                this.form.id = id;
+                this.form.name = name;
+                this.form.email = email;
+                this.form.about = about;
+                this.form.hobbies = hobbies;
             });
         },
         updateProfile() {
-            console.log(this.form);
             // Submit the form via a POST request
-            this.form.put("/api/user/" + this.form.id).then(({ data }) => {
-                Toast.fire({
-                    icon: "success",
-                    title: "Successfully updated"
+            axios
+                .put("/api/profile", this.form)
+                .then(({ data }) => {
+                    Toast.fire({
+                        icon: "success",
+                        title: "Successfully updated"
+                    });
+                })
+                .catch(err => {
+                    this.errors = err.response.data.errors;
                 });
-            });
         }
     }
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

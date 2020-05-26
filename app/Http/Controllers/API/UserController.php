@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Hobby;
+use Auth;
 
 class UserController extends Controller
 {    
@@ -51,7 +53,7 @@ class UserController extends Controller
     public function profile()
     {
         $user = \Auth::user();
-
+        $user = User::with('hobbies')->find($user->id);
         return response()->json(['user'=>$user]);
     }
 
@@ -79,7 +81,6 @@ class UserController extends Controller
         $this->validate($request, [
             'name'=>'required|string|max:100',
             'email'=>'required|string|email|max:100|unique:users,email,'.$id,
-            'password'=>'sometimes|min:5|max:50'
         ]);
         $user = User::find($id);
 
@@ -88,12 +89,44 @@ class UserController extends Controller
         if($request->password){
             $user->password = \Hash::make($request->password);
         }
-        // $user->role = $request->role;
+        $user->save();
+        return response()->json(['message'=>"Updated"]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $this->validate($request, [
+            'name'=>'required|string|max:100',
+            'email'=>'required|string|email|max:100|unique:users,email,'.Auth::user()->id,
+        ]);
+        $user = Auth::user();
+
+        $user->name=$request->name;
+        $user->email = $request->email;
+        $user->about = $request->about;
+        if($request->password){
+            $user->password = \Hash::make($request->password);
+        }
+
+        $hobbies_ids = $this->storeHobby($request->hobbies);
+        
+        $user->hobbies()->sync($hobbies_ids);
+
         $user->save();
 
         return response()->json(['message'=>"Updated"]);
     }
 
+    private function storeHobby($hobbies){
+        $hobby_ids=[];
+        foreach($hobbies as $h){
+            $d=[];
+            $d['name'] = $h['name'];
+            $d['code'] = $h['code'];
+            array_push($hobby_ids, Hobby::firstOrCreate($d)->id);
+        }
+        return $hobby_ids;        
+    }
     /**
      * Remove the specified resource from storage.
      *

@@ -27,4 +27,5 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::apiResource('posts', 'API\PostController');
     
     Route::get('profile','API\UserController@profile');
+    Route::put('profile','API\UserController@updateProfile');
 });

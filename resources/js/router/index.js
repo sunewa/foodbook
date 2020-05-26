@@ -6,6 +6,7 @@ import Post from "./../components/Post";
 import Profile from "./../components/Profile";
 import PostForm from "./../components/PostForm";
 import User from "./../components/User";
+import store from "../store";
 
 Vue.use(VueRouter);
 
@@ -21,12 +22,14 @@ let routes = [
     {
         path: "/manage/users",
         name: "user",
-        component: User
+        component: User,
+        meta: { isAdmin: true }
     },
     {
         path: "/manage/post",
         name: "post",
-        component: Post
+        component: Post,
+        meta: { isAdmin: true, isUser: true }
     },
     {
         path: "/manage/post/create",
@@ -43,6 +46,36 @@ const router = new VueRouter({
     mode: "history",
     // base: process.env.BASE_URL,
     routes
+});
+
+router.beforeEach((to, from, next) => {
+    // you could define your own authentication logic with token
+    let role = localStorage.getItem("role"); //store.getters.isAuthenticated
+
+    // check route meta if it requires auth or not
+    if (to.matched.some(record => record.meta.isAdmin)) {
+        if (role === "admin") {
+            next();
+        } else {
+            window.location.href = "/login";
+            next({
+                path: "/login",
+                params: { nextUrl: to.fullPath }
+            });
+        }
+    } else if (to.matched.some(record => record.meta.isUser)) {
+        if (role === "user") {
+            next();
+        } else {
+            window.location.href = "/login";
+            next({
+                path: "/login",
+                params: { nextUrl: to.fullPath }
+            });
+        }
+    } else {
+        next();
+    }
 });
 
 export default router;
