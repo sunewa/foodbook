@@ -15,21 +15,25 @@ let routes = [
         component: Dashboard
     },
     {
+        path: "/manage/users",
+        component: User
+    },
+    {
         path: "/manage/profile",
         component: Profile
     },
     {
-        path: "/manage/post",
+        path: "/manage/posts",
         name: "post",
         component: Post
     },
     {
-        path: "/manage/post/create",
+        path: "/manage/posts/create",
         name: "post-create",
         component: PostForm
     },
     {
-        path: "/manage/post/:id/edit",
+        path: "/manage/posts/:id/edit",
         name: "post-edit",
         component: PostForm
     }

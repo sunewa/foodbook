@@ -88,16 +88,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/manage/post" class="nav-link">
-              <i class="nav-icon fas fa-profile"></i>
+            <router-link to="/manage/posts" class="nav-link">
+              <i class="nav-icon fas fa-cubes"></i>
               <p>
-                Post
+                Posts
               </p>
             </router-link>
           </li>
+          
+          @can('isAdmin')
+            <li class="nav-item">
+              <router-link to="/manage/users" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+                <p>Users</p>
+              </router-link>
+            </li>
+          @endcan
           <li class="nav-item">
             <router-link to="/manage/profile" class="nav-link">
-              <i class="nav-icon fas fa-profile"></i>
+              <i class="nav-icon fas fa-id-badge"></i>
               <p>
                 Profile
               </p>
@@ -108,7 +117,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <a class="nav-link" href="{{ route('logout') }}"
                 onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
-                <i class="nav-icon fas fa-off"></i>
+                <i class="nav-icon fas fa-sign-out-alt"></i>
                 <p>{{ __('Logout') }}</p>
             </a>
 
@@ -116,39 +125,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 @csrf
             </form>
             
-          </li>
-
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cog"></i>
-              <p>
-                Manage
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <router-link to="/manage/users" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Users</p>
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Posts</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Simple Link
-                <span class="right badge badge-danger">New</span>
-              </p>
-            </a>
           </li>
         </ul>
       </nav>
@@ -185,5 +161,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- AdminLTE App -->
 <script src="{{ asset('./js/app.js') }}"></script>
+
 </body>
 </html>

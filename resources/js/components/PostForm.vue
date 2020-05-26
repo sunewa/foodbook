@@ -24,18 +24,9 @@
                                                     type="text"
                                                     name="title"
                                                     class="form-control"
-                                                    :class="{
-                                                        'is-invalid': form.errors.has(
-                                                            'title'
-                                                        )
-                                                    }"
                                                     v-on:keyup="checkSlug"
                                                 />
                                                 .com/{{ form.slug }}
-                                                <has-error
-                                                    :form="form"
-                                                    field="title"
-                                                ></has-error>
                                             </div>
 
                                             <div class="form-group">
@@ -64,20 +55,25 @@
                                                     v-model="form.description"
                                                     type="text"
                                                     name="description"
-                                                    :class="{
-                                                        'is-invalid': form.errors.has(
-                                                            'description'
-                                                        )
-                                                    }"
                                                 ></vue-editor>
-                                                <has-error
-                                                    :form="form"
-                                                    field="description"
-                                                ></has-error>
                                             </div>
                                         </div>
 
                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Tags</label>
+                                                <multiselect
+                                                    v-model="form.tags"
+                                                    tag-placeholder="Add this as new tag"
+                                                    placeholder="Search or add a tag"
+                                                    label="name"
+                                                    track-by="code"
+                                                    :options="options"
+                                                    :multiple="true"
+                                                    :taggable="true"
+                                                    @tag="addTag"
+                                                ></multiselect>
+                                            </div>
                                             <div class="form-group">
                                                 <label for="exampleInputFile"
                                                     >File input</label
@@ -91,11 +87,6 @@
                                                             type="file"
                                                             name="image"
                                                             class="form-control"
-                                                            :class="{
-                                                                'is-invalid': form.errors.has(
-                                                                    'image'
-                                                                )
-                                                            }"
                                                             id="exampleInputFile"
                                                         />
                                                         <label
@@ -116,10 +107,10 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <div class="offset-sm-2 col-sm-10">
+                                        <div class="col-sm-12">
                                             <button
                                                 type="submit"
-                                                class="btn btn-danger"
+                                                class="btn btn-success float-right"
                                             >
                                                 Submit
                                             </button>
@@ -141,14 +132,21 @@
 
 <script>
 import { VueEditor } from "vue2-editor";
+import Multiselect from "vue-multiselect";
 export default {
     components: {
-        VueEditor
+        VueEditor,
+        Multiselect
     },
     data() {
         return {
             isEdit: false,
-            form: new Form({
+            options: [
+                { name: "Vue.js", code: "1" },
+                { name: "Javascript", code: "2" },
+                { name: "Open Source", code: "3" }
+            ],
+            form: {
                 id: this.$route.params.id,
                 slug: "",
                 unique: "",
@@ -156,8 +154,9 @@ export default {
                 allow_comment: true,
                 image: "",
                 image_url: "http://127.0.0.1:8000/img/default.png",
-                description: ""
-            })
+                description: "",
+                tags: []
+            }
         };
     },
     created() {
@@ -167,6 +166,16 @@ export default {
     },
     mounted() {},
     methods: {
+        addTag(newTag) {
+            const tag = {
+                name: newTag,
+                code:
+                    newTag.substring(0, 2) +
+                    Math.floor(Math.random() * 10000000)
+            };
+            this.options.push(tag);
+            this.form.tags.push(tag);
+        },
         checkSlug() {
             if (this.form.title.length > 5 && !this.isEdit) {
                 this.form.slug = "";
@@ -179,13 +188,29 @@ export default {
         loadPost(id) {
             this.isEdit = true;
             axios.get("/api/posts/" + id).then(res => {
-                this.form.fill(res.data.post);
+                const {
+                    id,
+                    title,
+                    description,
+                    allow_comment,
+                    tags,
+                    image,
+                    image_url
+                } = res.data.post;
+
+                this.form.id = id;
+                this.form.title = title;
+                this.form.description = description;
+                this.form.allow_comment = allow_comment;
+                this.form.tags = tags;
+                this.form.image = image;
+                this.form.image_url = image_url;
             });
         },
         createPost() {
             // Submit the form via a POST request
-            this.form
-                .post("/api/posts/")
+            axios
+                .post("/api/posts", this.form)
                 .then(({ data }) => {
                     Toast.fire({
                         icon: "success",
@@ -202,10 +227,10 @@ export default {
                     }
                 });
         },
-        updatepost() {
+        updatePost() {
             // Submit the form via a POST request
-            this.form
-                .put("/api/posts/" + this.form.id)
+            axios
+                .put("/api/posts/" + this.form.id, this.form)
                 .then(({ data }) => {
                     Toast.fire({
                         icon: "success",
@@ -248,3 +273,5 @@ export default {
     }
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
