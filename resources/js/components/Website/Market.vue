@@ -3,13 +3,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Dashboard Component</div>
+                    <div class="card-header">Market Component</div>
 
                     <div class="card-body">
                         I'm an example component.
-                        <div v-if="authUser">
-                            {{ authUser.role }}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -19,11 +16,6 @@
 
 <script>
 export default {
-    computed: {
-        authUser() {
-            return this.$store.state.authUser;
-        }
-    },
     mounted() {
         console.log("Component mounted.");
     }

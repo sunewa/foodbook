@@ -6,11 +6,27 @@ import Post from "./../components/Post";
 import Profile from "./../components/Profile";
 import PostForm from "./../components/PostForm";
 import User from "./../components/User";
+
+import Home from "./../components/Website/Home";
+import Recipe from "./../components/Website/Recipe";
+import Market from "./../components/Website/Market";
 import store from "../store";
 
 Vue.use(VueRouter);
 
 let routes = [
+    {
+        path: "/",
+        component: Home
+    },
+    {
+        path: "/recipe",
+        component: Recipe
+    },
+    {
+        path: "/market",
+        component: Market
+    },
     {
         path: "/manage/dashboard",
         component: Dashboard
@@ -28,8 +44,7 @@ let routes = [
     {
         path: "/manage/posts",
         name: "post",
-        component: Post,
-        meta: { isAdmin: true, isUser: true }
+        component: Post
     },
     {
         path: "/manage/posts/create",
@@ -51,7 +66,6 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     // you could define your own authentication logic with token
     let role = localStorage.getItem("role"); //store.getters.isAuthenticated
-
     // check route meta if it requires auth or not
     if (to.matched.some(record => record.meta.isAdmin)) {
         if (role === "admin") {

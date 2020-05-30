@@ -13,14 +13,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('re');
+// });
+Route::get('/',  'HomeController@home');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/{vue_capture}',  'HomeController@home')->name('recipe');
+// Route::get('/market', 'HomeController@market')->name('market');
 
-Route::get('/manage/{vue_capture}', 'HomeController@index');
-Route::get('/manage/{first}/{second}', 'HomeController@index');
-Route::get('/manage/{first}/{second}/{third}', 'HomeController@index');
+
+Route::group(['middleware' => ['auth:web']], function () {
+    Route::get('/manage/{vue_capture}', function () {
+        return view('layouts.master');
+    });
+    Route::get('/manage/{first}/{second}', function () {
+        return view('layouts.master');
+    });
+    Route::get('/manage/{first}/{second}/{third}', function () {
+        return view('layouts.master');
+    });
+
+});

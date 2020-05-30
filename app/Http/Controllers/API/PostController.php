@@ -212,7 +212,9 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
-        $this->checkifBelongsToUser($post->user_id);
+        if(Auth::user()->role !== "admin" && $post->user_id !== \Auth::user()->id){
+            return response()->json(['message'=>"Not authorized"], 401);
+        }
         
         $post->delete();
 

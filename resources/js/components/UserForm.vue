@@ -82,21 +82,6 @@
                                 field="password"
                             ></has-error>
                         </div>
-                        <div class="form-group">
-                            <label>Role</label>
-                            <select
-                                v-model="form.role"
-                                name="role"
-                                class="form-control"
-                                :class="{
-                                    'is-invalid': form.errors.has('role')
-                                }"
-                            >
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
-                            </select>
-                            <has-error :form="form" field="role"></has-error>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button

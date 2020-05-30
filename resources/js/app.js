@@ -34,6 +34,7 @@ Vue.component(
     "example-component",
     require("./components/ExampleComponent.vue").default
 );
+Vue.component("recipe", require("./components/Website/Recipe.vue").default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -41,9 +42,13 @@ Vue.component(
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-axios.get("/api/profile").then(({ data }) => {
-    store.dispatch("loadAuthUser", data);
-});
+try {
+    axios.get("/api/profile").then(({ data }) => {
+        store.dispatch("loadAuthUser", data);
+    });
+} catch (err) {
+    console.log("s");
+}
 
 const app = new Vue({
     el: "#app",

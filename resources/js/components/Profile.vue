@@ -12,7 +12,7 @@
                             {{ profile.name }}
                         </h3>
                         <h5 class="widget-user-desc text-right">
-                            {{ profile.role | upperCase }}
+                            {{ profile.role }}
                         </h5>
                     </div>
                     <div class="widget-user-image">
