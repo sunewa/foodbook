@@ -3,8 +3,10 @@ import VueRouter from "vue-router";
 
 import Dashboard from "./../components/Dashboard";
 import Post from "./../components/Post";
+import Product from "./../components/Product";
 import Profile from "./../components/Profile";
 import PostForm from "./../components/PostForm";
+import ProductForm from "./../components/ProductForm";
 import User from "./../components/User";
 
 import Home from "./../components/Website/Home";
@@ -55,6 +57,21 @@ let routes = [
         path: "/manage/posts/:id/edit",
         name: "post-edit",
         component: PostForm
+    },
+    {
+        path: "/manage/products",
+        name: "product",
+        component: Product
+    },
+    {
+        path: "/manage/products/create",
+        name: "product-create",
+        component: ProductForm
+    },
+    {
+        path: "/manage/products/:id/edit",
+        name: "product-edit",
+        component: ProductForm
     }
 ];
 const router = new VueRouter({

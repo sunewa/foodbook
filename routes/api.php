@@ -29,6 +29,11 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::post('posts/check-slug','API\PostController@checkSlug');
     Route::apiResource('posts', 'API\PostController');
     
+
+    Route::get('/products/categories','API\ProductController@getCategorys');
+    Route::get('/products/tags','API\ProductController@getTags');
+    Route::post('products/check-slug','API\ProductController@checkSlug');
+    Route::apiResource('products', 'API\ProductController');
     
 
     Route::get('profile','API\UserController@profile');

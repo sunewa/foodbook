@@ -4,13 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Post;
+use App\Product;
 use App\Tag;
 use App\Category;
 use Image;
 use Auth;
 
-class PostController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,23 +19,23 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts=[];
+        $products=[];
         if(Auth::user()->role == "admin"){
-            $posts = Post::all();
+            $products = Product::all();
         }else if(Auth::user()->role == "user"){
-            $posts = Post::where('user_id',Auth::user()->id)->get();
+            $products = Product::where('user_id',Auth::user()->id)->get();
         }else{
 
         }
         
-        foreach($posts as $post) {
-           if($post->image){
-                $post->image_url = URL('img/uploads/thumbs/').'/'.$post->image;    
+        foreach($products as $product) {
+           if($product->image){
+                $product->image_url = URL('img/uploads/thumbs/').'/'.$product->image;    
            }
-           $post->image_url = URL('img/default.png');
+           $product->image_url = URL('img/default.png');
         };
 
-        return response()->json(['posts'=>$posts]);
+        return response()->json(['products'=>$products]);
     }
 
     /**
@@ -77,7 +77,7 @@ class PostController extends Controller
     public function checkSlug(Request $request){
         
         $slug = $this->slugify($request->title);
-        $isExist = Post::whereSlug($slug)->first();
+        $isExist = Product::whereSlug($slug)->first();
         if($isExist){
             return response()->json(['slug'=>$slug, 'unique'=> 0]);
         }else{
@@ -94,7 +94,7 @@ class PostController extends Controller
     {
         
         $slug = $this->slugify($request->title);
-        $isExist = Post::whereSlug($slug)->first();
+        $isExist = Product::whereSlug($slug)->first();
         if($isExist){
             return response()->json(['message'=>"Slug already exist"], 500);
         }
@@ -105,23 +105,24 @@ class PostController extends Controller
             'categories' => 'required'
         ]);
 
-        $post = new Post;
-        $post->user_id = \Auth::user()->id;
-        $post->slug = $slug;
-        $post->title = $request->title;
-        $post->description = $request->description;
-        $post->image = ($request->image) ? $request->image : '';
-        $post->allow_comment = $request->allow_comment;
+        $product = new Product;
+        $product->user_id = \Auth::user()->id;
+        $product->slug = $slug;
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->image = ($request->image) ? $request->image : '';
+        $product->available = $request->available;
+        $product->price = $request->price;
 
-        $post->save();
+        $product->save();
 
         $tag_ids = $this->storeTags($request->tags);
-        $post->tags()->sync($tag_ids);
+        $product->tags()->sync($tag_ids);
 
         $category_ids = $this->storeCategorys($request->categories);
-        $post->categories()->sync($category_ids);
+        $product->categories()->sync($category_ids);
 
-        return response()->json(['post'=>$post, 'message'=>"Saved"]);
+        return response()->json(['product'=>$product, 'message'=>"Saved"]);
     }
 
     /**
@@ -132,20 +133,20 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::with('tags')->with('categories')->find($id);
+        $product = Product::with('tags')->with('categories')->find($id);
         
-        if(Auth::user()->role !== "admin" && $post->user_id !== \Auth::user()->id){
+        if(Auth::user()->role !== "admin" && $product->user_id !== \Auth::user()->id){
             return response()->json(['message'=>"Not authorized"], 401);
         }
         
-        $post->image_url = URL('img/default.png');
-        if($post->image){
-            $post->image_url = URL('img/uploads/thumbs/').'/'.$post->image;    
+        $product->image_url = URL('img/default.png');
+        if($product->image){
+            $product->image_url = URL('img/uploads/thumbs/').'/'.$product->image;    
         }
         
     
 
-        return response()->json(['post'=>$post]);
+        return response()->json(['product'=>$product]);
     }
 
 
@@ -164,26 +165,27 @@ class PostController extends Controller
             'categories' => 'required'
         ]);
 
-        $post = Post::find($id);
+        $product = Product::find($id);
 
-        if(Auth::user()->role !== "admin" && $post->user_id !== \Auth::user()->id){
+        if(Auth::user()->role !== "admin" && $product->user_id !== \Auth::user()->id){
             return response()->json(['message'=>"Not authorized"], 401);
         }
 
-        $post->title = $request->title;
-        $post->description = $request->description;
-        $post->image = $request->image;
-        $post->allow_comment = $request->allow_comment;
+        $product->title = $request->title;
+        $product->description = $request->description;
+        $product->image = $request->image;
+        $product->available = $request->available;
+        $product->price = $request->price;
         
         $tag_ids = $this->storeTags($request->tags);
-        $post->tags()->sync($tag_ids);
+        $product->tags()->sync($tag_ids);
 
         $category_ids = $this->storeCategorys($request->categories);
-        $post->categories()->sync($category_ids);
+        $product->categories()->sync($category_ids);
 
-        $post->save();
+        $product->save();
 
-        return response()->json(['post'=>$post, 'message'=>"Saved"]);
+        return response()->json(['product'=>$product, 'message'=>"Saved"]);
     }
 
     private function storeTags($tags){
@@ -215,14 +217,14 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);
-        if(Auth::user()->role !== "admin" && $post->user_id !== \Auth::user()->id){
+        $product = Product::findOrFail($id);
+        if(Auth::user()->role !== "admin" && $product->user_id !== \Auth::user()->id){
             return response()->json(['message'=>"Not authorized"], 401);
         }
         
-        $post->delete();
+        $product->delete();
 
-        return response()->json(['message'=>"Post deleted successfully"]);
+        return response()->json(['message'=>"Product deleted successfully"]);
     }
 
     public function imageUpload(Request $request){
