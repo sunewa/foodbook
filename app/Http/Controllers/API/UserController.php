@@ -35,12 +35,13 @@ class UserController extends Controller
             'email'=>'required|string|email|max:100|unique:users',
             'password'=>'required|min:5|max:50'
         ]);
-        $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>\Hash::make($request->password),
-            'role'=>$request->role
-        ]);
+        $user = new User;
+        $user->name=$request->name;
+        $user->email = $request->email;
+        $user->password = \Hash::make($request->password);
+        $user->role = $request->role;
+        $user->save();
+
         return response()->json(['user'=>$user]);
     }
 

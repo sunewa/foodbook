@@ -28,8 +28,7 @@ let routes = [
     {
         path: "/manage/post",
         name: "post",
-        component: Post,
-        meta: { isAdmin: true, isUser: true }
+        component: Post
     },
     {
         path: "/manage/post/create",
