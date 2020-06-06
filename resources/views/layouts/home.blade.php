@@ -38,6 +38,11 @@
             </router-link>
           </li>
           <li class="nav-item">
+          <router-link to="/about" class="nav-link">
+                About
+            </router-link>
+          </li>
+          <li class="nav-item">
           <router-link to="/recipe" class="nav-link">
                 Recipe
             </router-link>
@@ -72,7 +77,7 @@
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+      <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
     </div>
     <!-- /.container -->
   </footer>

@@ -10,6 +10,7 @@ import ProductForm from "./../components/ProductForm";
 import User from "./../components/User";
 
 import Home from "./../components/Website/Home";
+import About from "./../components/Website/About";
 import Recipe from "./../components/Website/Recipe";
 import PostDetail from "./../components/Website/PostDetail";
 import Market from "./../components/Website/Market";
@@ -21,6 +22,10 @@ let routes = [
     {
         path: "/",
         component: Home
+    },
+    {
+        path: "/about",
+        component: About
     },
     {
         path: "/recipe",
