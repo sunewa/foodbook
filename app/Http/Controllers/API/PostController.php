@@ -35,9 +35,8 @@ class PostController extends Controller
         if($post->image){
             $post->image_url = URL('img/uploads/').'/'.$post->image;    
         }
-        
-        
-
+        $post->description = str_replace("<img src=","<img width='100%' src=", $post->description);
+    
         return response()->json(['post'=>$post]);
     }
     /**
@@ -170,9 +169,6 @@ class PostController extends Controller
         if($post->image){
             $post->image_url = URL('img/uploads/thumbs/').'/'.$post->image;    
         }
-        
-    
-
         return response()->json(['post'=>$post]);
     }
 

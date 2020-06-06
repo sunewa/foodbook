@@ -23,6 +23,14 @@ Route::get('/home/products/{slug}','API\ProductController@homeShow');
 Route::get('/home/posts','API\PostController@home');
 Route::get('/home/posts/{slug}','API\PostController@homeShow');
 
+Route::post('/home/posts/comment/{slug}','API\CommentController@store');
+Route::get('/home/posts/comment/{slug}','API\CommentController@getAll');
+Route::delete('/home/posts/comment/{slug}/{id}','API\CommentController@destroy');
+
+Route::delete('/home/posts/like/check','API\LikeController@check');
+Route::post('/home/posts/like/{slug}','API\LikeController@store');
+Route::get('/home/posts/like/{slug}','API\LikeController@getAll');
+Route::delete('/home/posts/like/{slug}/{id}','API\LikeController@destroy');
 
 Route::group(['middleware' => ['auth:web']], function () {
     Route::apiResource('user', 'API\UserController');
