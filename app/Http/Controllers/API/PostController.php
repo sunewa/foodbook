@@ -27,7 +27,7 @@ class PostController extends Controller
          return response()->json(['posts'=>$posts]);
     }
     public function homeShow($slug){
-        $post = Post::where('slug',$slug)->first();
+        $post = Post::with('tags')->with('categories')->where('slug',$slug)->first();
 
         
         
