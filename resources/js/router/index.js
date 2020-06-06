@@ -11,6 +11,7 @@ import User from "./../components/User";
 
 import Home from "./../components/Website/Home";
 import Recipe from "./../components/Website/Recipe";
+import PostDetail from "./../components/Website/PostDetail";
 import Market from "./../components/Website/Market";
 import store from "../store";
 
@@ -23,7 +24,13 @@ let routes = [
     },
     {
         path: "/recipe",
-        component: Recipe
+        component: Recipe,
+        name: "home-post"
+    },
+    {
+        path: "/recipe/:slug",
+        component: PostDetail,
+        name: "home-post-detail"
     },
     {
         path: "/market",

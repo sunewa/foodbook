@@ -12,6 +12,34 @@ use Auth;
 
 class PostController extends Controller
 {
+    public function home(){
+        $posts = Post::with('tags')->with('categories')->get();
+
+        foreach($posts as $post) {
+            $post->short_description = substr(strip_tags($post->description),0,50);
+            if($post->image){
+                 $post->image_url_thumbs = URL('img/uploads/thumbs/').'/'.$post->image;    
+            }
+            $post->image_url = URL('img/default.png');
+            unset($post->description);
+         };
+ 
+         return response()->json(['posts'=>$posts]);
+    }
+    public function homeShow($slug){
+        $post = Post::where('slug',$slug)->first();
+
+        
+        
+        $post->image_url = URL('img/default.png');
+        if($post->image){
+            $post->image_url = URL('img/uploads/').'/'.$post->image;    
+        }
+        
+        
+
+        return response()->json(['post'=>$post]);
+    }
     /**
      * Display a listing of the resource.
      *

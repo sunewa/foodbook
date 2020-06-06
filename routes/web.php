@@ -21,7 +21,6 @@ Route::get('/',  'HomeController@home');
 Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/{vue_capture}',  'HomeController@home')->name('recipe');
 // Route::get('/market', 'HomeController@market')->name('market');
 
 
@@ -37,3 +36,6 @@ Route::group(['middleware' => ['auth:web']], function () {
     });
 
 });
+
+Route::get('/{vue_capture}',  'HomeController@home')->name('recipe');
+Route::get('/{first}/{second}',  'HomeController@home');

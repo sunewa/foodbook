@@ -18,6 +18,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/home/products','API\ProductController@home');
+Route::get('/home/products/{slug}','API\ProductController@homeShow');
+Route::get('/home/posts','API\PostController@home');
+Route::get('/home/posts/{slug}','API\PostController@homeShow');
+
 
 Route::group(['middleware' => ['auth:web']], function () {
     Route::apiResource('user', 'API\UserController');

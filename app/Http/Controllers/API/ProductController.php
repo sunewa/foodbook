@@ -12,6 +12,20 @@ use Auth;
 
 class ProductController extends Controller
 {
+
+    public function home(){
+        $products = Product::all();
+
+        foreach($products as $product) {
+            if($product->image){
+                 $product->image_url = URL('img/uploads/thumbs/').'/'.$product->image;    
+            }
+            $product->image_url = URL('img/default.png');
+         };
+ 
+         return response()->json(['products'=>$products]);
+    }
+
     /**
      * Display a listing of the resource.
      *

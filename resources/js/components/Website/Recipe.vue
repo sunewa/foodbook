@@ -1,23 +1,36 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Recipe Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
+        <div class="row mb-2">
+            <div class="col-md-6" v-for="post in posts" :key="post.id">
+                <PostComponent v-bind:post="post"></PostComponent>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import PostComponent from "./PostComponent";
 export default {
+    components: {
+        PostComponent
+    },
+    data() {
+        return {
+            posts: []
+        };
+    },
+    created() {
+        this.loadPosts();
+    },
     mounted() {
         console.log("Component mounted.");
+    },
+    methods: {
+        loadPosts() {
+            axios.get("/api/home/posts").then(response => {
+                this.posts = response.data.posts;
+            });
+        }
     }
 };
 </script>
