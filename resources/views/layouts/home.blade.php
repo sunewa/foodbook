@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Food Book</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -50,6 +50,15 @@
           <li class="nav-item">
           <router-link to="/market" class="nav-link">
                 Market
+            </router-link>
+          </li>
+          <router-link to="/cart" class="nav-link">
+                Cart
+            </router-link>
+          </li>
+          <li class="nav-item">
+          <router-link to="/contact-us" class="nav-link">
+               Contact Us
             </router-link>
           </li>
           @auth

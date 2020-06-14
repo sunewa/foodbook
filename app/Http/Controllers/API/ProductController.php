@@ -14,17 +14,33 @@ class ProductController extends Controller
 {
 
     public function home(){
-        $products = Product::all();
+        $products = Product::orderBy('updated_at','desc')->get();
 
         foreach($products as $product) {
-            if($product->image){
-                 $product->image_url = URL('img/uploads/thumbs/').'/'.$product->image;    
-            }
+            $product->price_prefix = "AU$";
+            $product->short_description = substr(strip_tags($product->description),0,50);
             $product->image_url = URL('img/default.png');
+            if($product->image){
+                 $product->image_url_thumbs = URL('img/uploads/thumbs/').'/'.$product->image;    
+            }
          };
  
          return response()->json(['products'=>$products]);
     }
+
+    public function homeShow($slug){
+        $product = Product::with('tags')->with('categories')->where('slug',$slug)->first();
+
+        $product->price_prefix = "AU$";
+        $product->image_url = URL('img/default.png');
+        if($product->image){
+            $product->image_url = URL('img/uploads/').'/'.$product->image;    
+        }
+        $product->description = str_replace("<img src=","<img width='100%' src=", $product->description);
+    
+        return response()->json(['product'=>$product]);
+    }
+
 
     /**
      * Display a listing of the resource.

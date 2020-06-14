@@ -3,8 +3,19 @@
   <div class="container">
     <!-- Page Heading -->
     <h1 class="my-4">
-      Recipe
+      Recipe Book
       <small>All delicious foods recipe</small>
+
+      <input
+        class="form-control"
+        type="text"
+        placeholder="Search for recipe..."
+        v-model="search"
+        v-on:keyup="searchPost"
+      />
+
+      <h5 v-if="search">You have searched for {{ search }}</h5>
+      <h5 v-if="search">{{ posts.length }} posts found</h5>
     </h1>
 
     <div class="row">
@@ -25,7 +36,8 @@ export default {
   },
   data() {
     return {
-      posts: []
+      posts: [],
+      search: this.$route.query.search || ""
     };
   },
   created() {
@@ -36,9 +48,12 @@ export default {
   },
   methods: {
     loadPosts() {
-      axios.get("/api/home/posts").then(response => {
+      axios.get("/api/home/posts?search=" + this.search).then(response => {
         this.posts = response.data.posts;
       });
+    },
+    searchPost() {
+      this.loadPosts();
     }
   }
 };

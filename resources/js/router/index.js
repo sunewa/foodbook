@@ -4,16 +4,24 @@ import VueRouter from "vue-router";
 import Dashboard from "./../components/Dashboard";
 import Post from "./../components/Post";
 import Product from "./../components/Product";
+import Feedback from "./../components/Feedback";
 import Profile from "./../components/Profile";
 import PostForm from "./../components/PostForm";
 import ProductForm from "./../components/ProductForm";
 import User from "./../components/User";
+import History from "./../components/History";
+import Order from "./../components/Order";
 
 import Home from "./../components/Website/Home";
 import About from "./../components/Website/About";
+import Contact from "./../components/Website/Contact";
 import Recipe from "./../components/Website/Recipe";
 import PostDetail from "./../components/Website/PostDetail";
+import Cart from "./../components/Website/Cart";
+
 import Market from "./../components/Website/Market";
+import HomeProductDetail from "./../components/Website/ProductDetail";
+
 import store from "../store";
 
 Vue.use(VueRouter);
@@ -21,11 +29,16 @@ Vue.use(VueRouter);
 let routes = [
     {
         path: "/",
-        component: Home
+        component: Home,
+        name: "home"
     },
     {
         path: "/about",
         component: About
+    },
+    {
+        path: "/contact-us",
+        component: Contact
     },
     {
         path: "/recipe",
@@ -39,11 +52,25 @@ let routes = [
     },
     {
         path: "/market",
-        component: Market
+        component: Market,
+        name: "home-product"
+    },
+    {
+        path: "/cart",
+        component: Cart
+    },
+    {
+        path: "/market/:slug",
+        component: HomeProductDetail,
+        name: "home-product-detail"
     },
     {
         path: "/manage/dashboard",
         component: Dashboard
+    },
+    {
+        path: "/manage/feedback",
+        component: Feedback
     },
     {
         path: "/manage/users",
@@ -74,6 +101,16 @@ let routes = [
         path: "/manage/products",
         name: "product",
         component: Product
+    },
+    {
+        path: "/manage/products/order",
+        name: "product-order",
+        component: Order
+    },
+    {
+        path: "/manage/products/history",
+        name: "product-history",
+        component: History
     },
     {
         path: "/manage/products/create",

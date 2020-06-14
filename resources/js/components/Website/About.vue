@@ -3,7 +3,7 @@
     <header class>
       <div class="container text-center">
         <h1>Welcome to Food Book</h1>
-        <p class="lead">A landing page template freshly redesigned for Bootstrap 4</p>
+        <p class="lead">Platform for home chefs</p>
       </div>
     </header>
 
@@ -14,12 +14,10 @@
             <h2>About this page</h2>
             <p
               class="lead"
-            >This is a great place to talk about your webpage. This template is purposefully unstyled so you can use it as a boilerplate or starting point for you own landing page designs! This template features:</p>
+            >On this website, the members will be sharing their recipe or sell theirrecipe on market section. Registered users of our website can review otherusers’ recipe by commenting and rating the recipe. Only the registereduser of our website can post recipe or write comment or rate the recipeand also to sell or buy product from market section. Guest user can onlylook at the recipes but not able to perform activities mentioned above</p>
             <ul>
-              <li>Clickable nav links that smooth scroll to page sections</li>
-              <li>Responsive behavior when clicking nav links perfect for a one page website</li>
-              <li>Bootstrap's scrollspy feature which highlights which section of the page you're on in the navbar</li>
-              <li>Minimal custom CSS so you are free to explore your own unique design options</li>
+              <li>Post the recipe</li>
+              <li>Sell your item with our platform</li>
             </ul>
           </div>
         </div>
@@ -30,10 +28,10 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto">
-            <h2>Services we offer</h2>
+            <h2>Who we are?</h2>
             <p
               class="lead"
-            >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut optio velit inventore, expedita quo laboriosam possimus ea consequatur vitae, doloribus consequuntur ex. Nemo assumenda laborum vel, labore ut velit dignissimos.</p>
+            >Currently, the federation is hosting a website that provides information about the executive board of national offices and state wise offices. There is also a section for programs that are being organized by the federation and also provides a calendar with the programs and events. There is also a tab for contact information of national offices and other state offices. Since it is a huge organization with members from all around the nation, there are many members that include professional chefs, cooks, culinary students and apprentices. Basically, it includes members who can teach and who want to learn. Also, the members who want to develop their career or establish their company by sharing their culinary skills and recipes. The federation wants us to develop a networking application for their members or any food enthusiast where people can share their recipe or even sell their food. Moreover, this platform will be helpful for people who want to learn about culinary arts from adept personnel. The members can also hire highly rated chefs for events. After careful consideration of the client’s requirements, we will develop a web application that has networking features, blogging features and members can hire the chefs.</p>
           </div>
         </div>
       </div>
@@ -46,7 +44,7 @@
             <h2>Contact us</h2>
             <p
               class="lead"
-            >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero odio fugiat voluptatem dolor, provident officiis, id iusto! Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa exercitationem, in, quo totam.</p>
+            >for Australian Culinary Federation, head office located at Kew East VIC 3102.</p>
           </div>
         </div>
       </div>

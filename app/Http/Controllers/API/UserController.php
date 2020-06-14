@@ -87,6 +87,7 @@ class UserController extends Controller
 
         $user->name=$request->name;
         $user->email = $request->email;
+        $user->status = $request->status;
         if($request->password){
             $user->password = \Hash::make($request->password);
         }

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected $fillable = [
+        "image"
+    ];
     public function tags()
     {
         return $this->belongsToMany('App\Tag', 'product_tag');

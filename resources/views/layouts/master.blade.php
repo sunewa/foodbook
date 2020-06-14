@@ -10,7 +10,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="csrf-token" content="{{csrf_token()}}" >
-  <title>AdminLTE 3 | Starter</title>
+  <title>Food Book</title>
 
   
   <!-- Theme style -->
@@ -98,15 +98,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <i class="nav-icon fas fa-box-open"></i>
               <p>
                 Products
+                <i class="fas fa-angle-left right"></i>
               </p>
             </router-link>
+            <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <router-link to="/manage/products/history" class="nav-link">
+              
+                <p>Purchase History</p>
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/manage/products/order" class="nav-link">
+              
+                <p>Order History</p>
+              </router-link>
+            </li>
+          </ul>
           </li>
+         
 
           @can('isAdmin')
             <li class="nav-item">
               <router-link to="/manage/users" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
                 <p>Users</p>
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/manage/feedback" class="nav-link">
+              <i class="nav-icon fas fa-comment"></i>
+                <p>Feedback</p>
               </router-link>
             </li>
           @endcan

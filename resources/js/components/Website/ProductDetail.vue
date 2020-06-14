@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <div class="row" v-if="post">
+    <div class="row" v-if="product">
       <!-- Post Content Column -->
       <div class="col-lg-8">
         <!-- Title -->
-        <h1 class="mt-4">{{ post.title }}</h1>
+        <h1 class="mt-4">{{ product.title }}</h1>
 
         <!-- Author -->
         <p class="lead">
@@ -15,16 +15,16 @@
         <hr />
 
         <!-- Date/Time -->
-        <p>{{ post.created_at | myDate }}</p>
+        <p>{{ product.created_at | myDate }}</p>
 
         <hr />
 
         <!-- Preview Image -->
 
-        <img class="img-fluid rounded" :src="post.image_url" alt="900x300" />
+        <img class="img-fluid rounded" :src="product.image_url" alt="900x300" />
 
         <hr />
-        <p v-html="post.description"></p>
+        <p v-html="product.description"></p>
         <hr />
 
         <!-- Comments Form -->
@@ -35,12 +35,12 @@
               <button
                 v-if="can_like"
                 class="btn btn-success float-right"
-                v-on:click="createLike(post.id,'like')"
+                v-on:click="createLike(product.id,'like')"
               >Like</button>
               <button
                 v-else
                 class="btn btn-danger float-right"
-                v-on:click="createLike(post.id,'unlike')"
+                v-on:click="createLike(product.id,'unlike')"
               >Unlike</button>
 
               <span>
@@ -70,7 +70,7 @@
         <div class="card my-4" v-else>
           <h5 class="card-header">
             <div>
-              You need to login to like and comment this post
+              You need to login to like and comment this product
               <span class="float-right">
                 <i class="fas fa-heart"></i>
                 {{ like_count }}
@@ -96,14 +96,48 @@
       <!-- Sidebar Widgets Column -->
       <div class="col-md-4">
         <!-- Search Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Search</h5>
+        <div class="card my-4" v-if="isAuth">
+          <form @submit.prevent="addToCart">
+            <h5 class="card-header">
+              Add to Cart
+              <button class="btn btn-primary float-right" type="submit">Add to Cart</button>
+            </h5>
+
+            <div class="card-body">
+              <div class="row">
+                <div class="col-lg-4">
+                  <label>Price</label>
+                  <br />
+                  {{ product.price_prefix}}{{ product.price}}
+                </div>
+                <div class="col-lg-4">
+                  <label>Quantity</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="2"
+                    min="0"
+                    v-model="cart_form.quantity"
+                    @input="calculateTotal"
+                  />
+                </div>
+                <div class="col-lg-4">
+                  <label>Total</label>
+                  <br />
+                  {{ product.price_prefix}}{{ cart_form.total }}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card my-4" v-else>
+          <h5 class="card-header">Add to Cart</h5>
           <div class="card-body">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for..." v-model="search" />
-              <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button" v-on:click="submitSearch">Go!</button>
-              </span>
+            <div class="row">
+              <div class="col-lg-12">
+                <label>You need to login to buy</label>
+              </div>
             </div>
           </div>
         </div>
@@ -115,7 +149,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <ul class="list-unstyled mb-0">
-                  <li v-for="category in post.categories" :key="category.id">
+                  <li v-for="category in product.categories" :key="category.id">
                     <a href="#">{{ category.name }}</a>
                   </li>
                 </ul>
@@ -130,7 +164,7 @@
             <div class="row">
               <div class="col-lg-12">
                 <ul class="list-unstyled mb-0">
-                  <li v-for="tag in post.tags" :key="tag.id">
+                  <li v-for="tag in product.tags" :key="tag.id">
                     <a href="#">{{ tag.name }}</a>
                   </li>
                 </ul>
@@ -157,9 +191,8 @@
 export default {
   data() {
     return {
-      search: "",
       slug: this.$route.params.slug,
-      post: null,
+      product: null,
       like_count: 0,
       can_like: false,
       comments: [],
@@ -168,11 +201,16 @@ export default {
         full_name: "",
         comment: ""
       },
+      cart_form: {
+        id: "",
+        quantity: 0,
+        total: 0.0
+      },
       errors: []
     };
   },
   created() {
-    this.loadPosts();
+    this.loadProducts();
     this.loadComments();
     this.loadLike();
   },
@@ -186,24 +224,25 @@ export default {
     }
   },
   methods: {
-    submitSearch() {
-      this.$router.push({ name: "home-post", query: { search: this.search } });
+    calculateTotal: function() {
+      this.cart_form.total = this.product.price * this.cart_form.quantity;
     },
-    loadPosts() {
-      axios.get("/api/home/posts/" + this.slug).then(response => {
-        this.post = response.data.post;
-        this.form.id = response.data.post.id;
+    loadProducts() {
+      axios.get("/api/home/products/" + this.slug).then(response => {
+        this.product = response.data.product;
+        this.form.id = response.data.product.id;
+        this.cart_form.id = response.data.product.id;
       });
     },
     loadComments() {
-      axios.get("/api/home/posts/comment/" + this.slug).then(response => {
+      axios.get("/api/home/products/comment/" + this.slug).then(response => {
         this.comments = response.data.comments;
       });
     },
     createComment() {
       // Submit the form via a POST request
       axios
-        .post("/api/home/posts/comment/" + this.slug, this.form)
+        .post("/api/home/products/comment/" + this.slug, this.form)
         .then(response => {
           this.comments = response.data.comments;
           this.form.comment = "";
@@ -219,7 +258,7 @@ export default {
     deleteComment(id) {
       // Submit the form via a POST request
       axios
-        .delete("/api/home/posts/comment/" + this.slug + "/" + id)
+        .delete("/api/home/products/comment/" + this.slug + "/" + id)
         .then(response => {
           this.comments = response.data.comments;
           this.form.comment = "";
@@ -235,7 +274,7 @@ export default {
     createLike(id, type) {
       // Submit the form via a POST request
       axios
-        .post("/api/home/posts/like/" + this.slug, { id: id, type: type })
+        .post("/api/home/products/like/" + this.slug, { id: id, type: type })
         .then(response => {
           this.like_count = response.data.like_count;
           this.can_like = response.data.can_like;
@@ -249,9 +288,17 @@ export default {
         });
     },
     loadLike() {
-      axios.get("/api/home/posts/like/" + this.slug).then(response => {
+      axios.get("/api/home/products/like/" + this.slug).then(response => {
         this.like_count = response.data.like_count;
         this.can_like = response.data.can_like;
+      });
+    },
+    addToCart() {
+      axios.put("/api/add-to-cart", this.cart_form).then(response => {
+        Toast.fire({
+          icon: "success",
+          title: "Added to cart"
+        });
       });
     }
   }

@@ -12,15 +12,23 @@ use Auth;
 
 class PostController extends Controller
 {
-    public function home(){
-        $posts = Post::with('tags')->with('categories')->get();
+    public function home(Request $request){
+        $posts =[];
+        if($request->search){
+            $posts = Post::with('tags')->with('categories')
+            ->where('title','like',"%".$request->search."%")
+            ->whereOr('slug','like',"%".$request->search."%")
+            ->orderBy('updated_at','desc')->get();
+        }else{
+            $posts = Post::with('tags')->with('categories')->orderBy('updated_at','desc')->get();
+        }
 
         foreach($posts as $post) {
             $post->short_description = substr(strip_tags($post->description),0,50);
+            $post->image_url = URL('img/default.png');
             if($post->image){
                  $post->image_url_thumbs = URL('img/uploads/thumbs/').'/'.$post->image;    
             }
-            $post->image_url = URL('img/default.png');
             unset($post->description);
          };
  
@@ -29,8 +37,6 @@ class PostController extends Controller
     public function homeShow($slug){
         $post = Post::with('tags')->with('categories')->where('slug',$slug)->first();
 
-        
-        
         $post->image_url = URL('img/default.png');
         if($post->image){
             $post->image_url = URL('img/uploads/').'/'.$post->image;    

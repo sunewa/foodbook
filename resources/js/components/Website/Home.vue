@@ -22,7 +22,7 @@
 
     <div class="row">
       <div class="col-md-8">
-        <img class="img-fluid" src="http://placehold.it/750x500" alt />
+        <img class="img-fluid" src="http://127.0.0.1:8000/img/home.jpg" alt />
       </div>
 
       <div class="col-md-4">
@@ -40,30 +40,30 @@
     <!-- /.row -->
 
     <!-- Related Projects Row -->
-    <h3 class="my-4">More Recipe</h3>
+    <h3 class="my-4">Feature Chef</h3>
 
     <div class="row">
       <div class="col-md-3 col-sm-6 mb-4">
         <a href="#">
-          <img class="img-fluid" src="http://placehold.it/500x300" alt />
+          <img class="img-fluid" src="http://127.0.0.1:8000/img/1.jpg" alt />
         </a>
       </div>
 
       <div class="col-md-3 col-sm-6 mb-4">
         <a href="#">
-          <img class="img-fluid" src="http://placehold.it/500x300" alt />
+          <img class="img-fluid" src="http://127.0.0.1:8000/img/2.jpg" alt />
         </a>
       </div>
 
       <div class="col-md-3 col-sm-6 mb-4">
         <a href="#">
-          <img class="img-fluid" src="http://placehold.it/500x300" alt />
+          <img class="img-fluid" src="http://127.0.0.1:8000/img/4.jpg" alt />
         </a>
       </div>
 
       <div class="col-md-3 col-sm-6 mb-4">
         <a href="#">
-          <img class="img-fluid" src="http://placehold.it/500x300" alt />
+          <img class="img-fluid" src="http://127.0.0.1:8000/img/3.jpg" alt />
         </a>
       </div>
     </div>
@@ -83,8 +83,10 @@ export default {
 /* 1920x1080 */
 .masthead {
   height: 100vh;
+  opacity: 0.9;
   min-height: 500px;
-  background-image: url("https://source.unsplash.com/BtbjCFUvBXs/1920x1080");
+  color: white;
+  background-image: url("http://127.0.0.1:8000/img/slider.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
